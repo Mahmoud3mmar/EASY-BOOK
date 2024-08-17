@@ -1,32 +1,17 @@
 {
-  "version": 2,
-  "env": {
-    "POSTGRES_USER":"postgres",
-    "POSTGRES_PASSWORD":"postgres",
-    "POSTGRES_DB":"EASY-BOOK",
-    
-    "NodeMailer_Host":"smtp.ethereal.email",
-    "NodeMailer_USER":"gisselle8@ethereal.email",
-    "NodeMailer_PW":"HA5DQrdbncSWgQebJ1",
-    "JWT_ACCESS_SECRET":"SHHH",
-    "JWT_REFRESH_SECRET":"1h"
-  },
-  "builds": [
+    "version": 2,
+    "builds": [
       {
-          "src": "src/main.ts",
-          "use": "@vercel/node"
+        "src": "src/main.ts",
+        "use": "@vercel/node"
       }
-  ],
-  "routes": [
+    ],
+    "routes": [
       {
-          "src": "/(.*)",
-          "dest": "src/main.ts",
-          "methods": [
-              "GET",
-              "POST",
-              "PUT",
-              "DELETE"
-          ]
+        "src": "/(.*)",
+        "dest": "src/main.ts",
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
       }
-  ]
-}
+    ]
+  }
+  
