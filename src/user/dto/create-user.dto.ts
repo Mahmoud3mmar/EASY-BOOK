@@ -8,7 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Roles } from '../utility/user.enum';
+import { Roles } from '../utils/user.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {

@@ -1,7 +1,6 @@
 
-// import { Roles } from "src/users/utility/user.enum";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Roles } from "../utility/user.enum";
+import { Roles } from "../utils/user.enum";
 
 
 @Entity('users')
@@ -42,18 +41,7 @@ export class UserEntity{
     })
     role: Roles;
 
-    // @Column()
-    // resetCode?: string; 
-
-    // @OneToMany(() => OrderEntity, order => order.user)
-    // orders: OrderEntity[];
-
-    // @OneToMany(() => CartEntity, cart => cart.user)
-    // carts: CartEntity[];
-
-    // @ManyToMany(() => ProductEntity, product => product.users)
-    // @JoinTable()
-    // products: ProductEntity[];
+    
 
     
 
