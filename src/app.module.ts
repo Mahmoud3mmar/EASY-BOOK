@@ -10,16 +10,14 @@ import { OfferModule } from './offer/offer.module';
 import { ServiceModule } from './service/service.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { RootoshModule } from './rootosh/rootosh.module';
-import { ServiceEntity } from './service/entities/service.entity';
-import { BranchEntity } from './branch/entities/branch.entity';
-import { UserEntity } from './user/entities/user.entity';
+
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
-    }),    TypeOrmModule.forFeature([ServiceEntity,BranchEntity,UserEntity]),
+    }), 
 
     TypeOrmModule.forRoot({
       // type:'postgres',
