@@ -52,8 +52,8 @@ export class AuthService {
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      // Generate OTP
-      const otp = this.generateOtp();
+      // // Generate OTP
+      // const otp = this.generateOtp();
 
       // Create new user
       const user = this.UserRepository.create({
@@ -61,7 +61,7 @@ export class AuthService {
         email,
         password: hashedPassword,
         role,
-        otp,
+        // otp,
         otpExpiration: new Date(Date.now() + 10 * 60 * 1000), // OTP valid for 10 minutes
       });
 
@@ -69,7 +69,7 @@ export class AuthService {
       const newUser = await this.UserRepository.save(user);
 
       // Send OTP email
-      await this.sendOtpEmail(newUser.email, otp);
+      // await this.sendOtpEmail(newUser.email, otp);
 
       return newUser;
     } catch (error) {
@@ -125,9 +125,11 @@ export class AuthService {
     const user = await this.validateUser(email, password);
 
     // Check if the user's email is verified
-    if (!user.isEmailVerified) {
-      throw new UnauthorizedException('Email not verified');
-    }
+    // if (!user.isEmailVerified) {
+    //   throw new UnauthorizedException('Email not verified');
+    // } 
+    
+   
 
     // // Generate access token
     // const accessToken = await this.generateAccessToken(
@@ -238,36 +240,57 @@ export class AuthService {
     await this.UserRepository.save(user);
 
     // Send the reset link to the user via email
-    const resetLink = `http://yourapp.com/reset-password?token=${resetToken}`;
-    const mailOptions = {
-      from: process.env.NodeMailer_USER,
-      to: email,
-      subject: 'Password Reset Request',
-      text: `Click the link to reset your password: ${resetLink}`,
-    };
+    // const resetLink = `http://yourapp.com/reset-password?token=${resetToken}`;
+    // const mailOptions = {
+    //   from: process.env.NodeMailer_USER,
+    //   to: email,
+    //   subject: 'Password Reset Request',
+    //   text: `Click the link to reset your password: ${resetLink}`,
+    // };
+    // 
+    // Generate OTP
+      const otp = this.generateOtp();
 
     try {
-      await this.MailService.transporter.sendMail(mailOptions);
+      // Send OTP email
+      await this.sendOtpEmail(user.email, otp);
     } catch (error) {
       throw new InternalServerErrorException('Failed to send reset email');
     }
   }
 
-  async resetPassword(resetToken: string, newPassword: string): Promise<void> {
+  async resetPassword(resetToken: string, otp: string, newPassword: string): Promise<void> {
+    // Find the user by reset token
     const user = await this.UserRepository.findOne({ where: { resetToken } });
-
+  
+    // Check if the user and the reset token are valid
     if (!user || user.resetTokenExpiration < new Date()) {
       throw new UnauthorizedException('Invalid or expired reset token');
     }
-    const salt = await bcrypt.genSalt();
-
-    user.password = await bcrypt.hash(newPassword, salt); // Hash the new password
-    user.resetToken = null;
-    user.resetTokenExpiration = null;
-
-    await this.UserRepository.save(user);
+  
+    // Check if the OTP is valid
+    if (!user.otp || user.otp !== otp || user.otpExpiration < new Date()) {
+      throw new UnauthorizedException('Invalid or expired OTP');
+    }
+  
+    try {
+      // Generate a salt and hash the new password
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+  
+      // Update the user entity
+      user.password = hashedPassword;
+      user.resetToken = null;
+      user.resetTokenExpiration = null;
+      user.otp = null;
+      user.otpExpiration = null;
+  
+      // Save the updated user entity
+      await this.UserRepository.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to reset password');
+    }
   }
-
   async logout(userId: number): Promise<any> {
     return this.UserRepository.update(userId, { refreshToken: null });
   }

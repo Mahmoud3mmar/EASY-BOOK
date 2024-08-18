@@ -17,6 +17,7 @@ import { AccessTokenGuard } from './guards/accessToken.guard';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { VerifyOtpDto } from './dto/verify.otp.dto';
+import { RequestPasswordResetDto, ResetPasswordDto } from './dto/reset.pw.auth.dto';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -77,24 +78,24 @@ export class AuthController {
 
 
 
-  @ApiBody({
-    description: 'Request payload to reset password',
-    schema: {
-      type: 'object',
-      properties: {
-        email: {
-          type: 'string',
-          description: 'The email of the user requesting a password reset',
-          example: 'user@example.com',
-        },
-      },
-      required: ['email'],
-    },
-  })
-  @Post('request/pw/reset')
-  resetpassword(@Body('email') email: string): Promise<void> {
-    return this.authService.requestPasswordReset(email);
-  }
+  // @ApiBody({
+  //   description: 'Request payload to reset password',
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       email: {
+  //         type: 'string',
+  //         description: 'The email of the user requesting a password reset',
+  //         example: 'user@example.com',
+  //       },
+  //     },
+  //     required: ['email'],
+  //   },
+  // })
+  // @Post('request/pw/reset')
+  // resetpassword(@Body('email') email: string): Promise<void> {
+  //   return this.authService.requestPasswordReset(email);
+  // }
 
 
 
@@ -111,16 +112,30 @@ export class AuthController {
 
 
 
-   @ApiOperation({
-    summary: 'Refresh access token',
-    description: 'Refreshes the access token using the provided refresh token',
-  })
-  @UseGuards(RefreshTokenGuard)
-  @Get('refresh/token')
-  refreshTokens(@Request() Req) {
-    const userId = Req.user['sub'];
-    const refreshToken = Req.user['refreshToken'];
-    return this.authService.refreshTokens(userId, refreshToken);
-  }
+  //  @ApiOperation({
+  //   summary: 'Refresh access token',
+  //   description: 'Refreshes the access token using the provided refresh token',
+  // })
+  // @UseGuards(RefreshTokenGuard)
+  // @Get('refresh/token')
+  // refreshTokens(@Request() Req) {
+  //   const userId = Req.user['sub'];
+  //   const refreshToken = Req.user['refreshToken'];
+  //   return this.authService.refreshTokens(userId, refreshToken);
+  // }
 
+
+   // Endpoint to request a password reset
+   @Post('request/password/reset')
+   async requestPasswordReset(@Body() RequestPasswordResetDto: RequestPasswordResetDto): Promise<void> {
+     const { email } = RequestPasswordResetDto;
+     return this.authService.requestPasswordReset(email);
+   }
+ 
+   // Endpoint to reset the password
+   @Post('reset/password')
+   async resetPassword(@Body() ResetPasswordDto: ResetPasswordDto): Promise<void> {
+     const { resetToken, otp, newPassword } = ResetPasswordDto;
+     return this.authService.resetPassword(resetToken, otp, newPassword);
+   }
 }
