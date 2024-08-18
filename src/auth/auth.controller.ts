@@ -12,10 +12,12 @@ import { AuthService } from './auth.service';
 
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserEntity } from '../user/entities/user.entity';
-import { LoginAuthDto } from './dto/login-auth.dto';
+import { LoginAuthDto } from './dto/login.auth.dto';
 import { AccessTokenGuard } from './guards/accessToken.guard';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
-
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { VerifyOtpDto } from './dto/verify.otp.dto';
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -24,18 +26,45 @@ export class AuthController {
   signUp(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.authService.signUp(createUserDto);
   }
-  @Post('verify-otp')
+
+
+
+
+  // @ApiResponse({ status: 201, description: 'OTP verified successfully.' })
+  // @ApiResponse({ status: 400, description: 'Invalid OTP.' })
+  @Post('verify/otp')
   verifyOtp(
-    @Body('email') email: string,
-    @Body('otp') otp: string,
+    @Body() VerifyOtpDto: VerifyOtpDto
   ): Promise<void> {
-    return this.authService.verifyOtp(email, otp);
+    return this.authService.verifyOtp(VerifyOtpDto);
   }
 
-  @Post('resend-otp')
+
+  @ApiBody({
+    description: 'Request payload to resend OTP',
+    schema: {
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+          description: 'The email of the user requesting OTP resend',
+          example: 'user@example.com',
+        },
+      },
+      required: ['email'],
+    },
+  })
+  @Post('resend/otp')
   async resendotp(@Body('email') email: string): Promise<any> {
     return await this.authService.resendOtp(email);
   }
+
+
+
+
+
+
+
   @Post('signin')
   async signIn(
     @Body() LoginAuthDto: LoginAuthDto,
@@ -44,44 +73,54 @@ export class AuthController {
       await this.authService.signIn(LoginAuthDto);
     return { accessToken, refreshToken };
   }
-  @Post('request-pw-reset')
-  resendOtp(@Body('email') email: string): Promise<void> {
+
+
+
+
+  @ApiBody({
+    description: 'Request payload to reset password',
+    schema: {
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+          description: 'The email of the user requesting a password reset',
+          example: 'user@example.com',
+        },
+      },
+      required: ['email'],
+    },
+  })
+  @Post('request/pw/reset')
+  resetpassword(@Body('email') email: string): Promise<void> {
     return this.authService.requestPasswordReset(email);
   }
+
+
+
+  @ApiOperation({
+    summary: 'Logout user',
+    description: 'Logs out the user by invalidating the access token',
+  })
   @UseGuards(AccessTokenGuard)
   @Get('logout')
   logout(@Request() Req): any {
     this.authService.logout(Req.user['sub']);
   }
+
+
+
+
+   @ApiOperation({
+    summary: 'Refresh access token',
+    description: 'Refreshes the access token using the provided refresh token',
+  })
   @UseGuards(RefreshTokenGuard)
-  @Get('refresh-token')
+  @Get('refresh/token')
   refreshTokens(@Request() Req) {
     const userId = Req.user['sub'];
     const refreshToken = Req.user['refreshToken'];
     return this.authService.refreshTokens(userId, refreshToken);
   }
-  // @Post()
-  // create(@Body() createAuthDto: CreateAuthDto) {
-  //   return this.authService.create(createAuthDto);
-  // }
 
-  // @Get()
-  // findAll() {
-  //   return this.authService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-  //   return this.authService.update(+id, updateAuthDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.authService.remove(+id);
-  // }
 }
