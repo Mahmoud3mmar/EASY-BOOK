@@ -10,12 +10,10 @@ import {
 
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { Request } from 'express';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { Roles } from 'src/user/utility/user.enum';
 import { MailService } from 'src/user/utility/Email.Service';
 import * as crypto from 'crypto';
 import { LoginAuthDto } from './dto/login-auth.dto';
