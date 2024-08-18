@@ -13,8 +13,8 @@ import * as bcrypt from 'bcrypt';
 import { UserEntity } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { MailService } from 'src/user/utility/Email.Service';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { MailService } from '../user/utility/Email.Service';
 import * as crypto from 'crypto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { v4 as uuidv4 } from 'uuid'; // For generating unique tokens
