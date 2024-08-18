@@ -5,13 +5,22 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BranchModule } from './branch/branch.module';
+import { OfferModule } from './offer/offer.module';
+import { ServiceModule } from './service/service.module';
+import { ReservationModule } from './reservation/reservation.module';
+import { RootoshModule } from './rootosh/rootosh.module';
+import { ServiceEntity } from './service/entities/service.entity';
+import { BranchEntity } from './branch/entities/branch.entity';
+import { UserEntity } from './user/entities/user.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
-    }),
+    }),    TypeOrmModule.forFeature([ServiceEntity,BranchEntity,UserEntity]),
+
     TypeOrmModule.forRoot({
       // type:'postgres',
       // host: 'localhost',
@@ -38,9 +47,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           rejectUnauthorized: false, // Required for self-signed certificates
         },
       },
+
+
     }),
     AuthModule,
-    UserModule
+    UserModule,
+    BranchModule,
+    OfferModule,
+    ServiceModule,
+    ReservationModule,
+    RootoshModule
   ],
   controllers: [AppController],
   providers: [AppService],
