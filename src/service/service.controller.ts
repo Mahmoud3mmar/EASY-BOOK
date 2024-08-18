@@ -3,7 +3,9 @@ import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { ServiceEntity } from './entities/service.entity';
-import { PaginateResultDto } from 'src/branch/dto/paginate-result.dto';
+import { PaginateResultDto } from '../branch/dto/paginate-result.dto';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('service')
 
 @Controller('service')
 export class ServiceController {

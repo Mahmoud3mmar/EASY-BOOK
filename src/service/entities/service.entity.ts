@@ -2,7 +2,7 @@
 import { UUID } from 'crypto';
 import { ReservationEntity } from '../../reservation/entities/reservation.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
-import { RootoshEntity } from 'src/rootosh/entities/rootosh.entity';
+import { RootoshEntity } from '../../rootosh/entities/rootosh.entity';
 
 
 
