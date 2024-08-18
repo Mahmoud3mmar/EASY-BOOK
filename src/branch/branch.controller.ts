@@ -4,7 +4,10 @@ import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { BranchEntity } from './entities/branch.entity';
 import { PaginateResultDto } from './dto/paginate-result.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('branch')
 @Controller('branch')
 export class BranchController {
   constructor(private readonly branchService: BranchService) {}
